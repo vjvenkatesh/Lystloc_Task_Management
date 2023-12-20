@@ -35,7 +35,7 @@ const getAllTasks = async (req, res) => {
     const tasks = await GetAllTaskService(userid);
     console.log(tasks);
     if (tasks) {
-      res.status(201).json(tasks);
+      res.status(200).json(tasks);
     }
   } catch (error) {
     console.error(error);
@@ -79,8 +79,15 @@ const updateTask = async (req, res) => {
 
     const taskByuser = await getUserByTask(taskId);
 
-    if (taskByuser.length > 0) {
-      if (userId === taskByuser[0].user_id || role === "admin") {
+    console.log(taskByuser, " user");
+    if (role === "admin") {
+      const task = await updateTaskService(taskId, description);
+
+      if (task) {
+        res.status(200).json({ message: "Task Updated Successfully" });
+      }
+    } else if (taskByuser.length > 0) {
+      if (taskByuser[0].user_id === userId) {
         const task = await updateTaskService(taskId, description);
         if (task) {
           res.status(200).json({ message: "Task Updated Successfully" });
@@ -107,8 +114,13 @@ const deleteTask = async (req, res) => {
     const taskId = req.params.id;
     const taskByuser = await getUserByTask(taskId);
 
-    if (taskByuser.length > 0) {
-      if (userId === taskByuser[0].user_id || role === "admin") {
+    if (role === "admin") {
+      const task = await deleteTaskService(taskId);
+      if (task) {
+        res.status(200).json({ message: "Task Deleted Successfully" });
+      }
+    } else if (taskByuser.length > 0) {
+      if (userId === taskByuser[0].user_id) {
         const task = await deleteTaskService(taskId);
         if (task) {
           res.status(200).json({ message: "Task Deleted Successfully" });
