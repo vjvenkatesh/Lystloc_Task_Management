@@ -35,7 +35,7 @@ const getAllTasks = async (req, res) => {
     const tasks = await GetAllTaskService(userid);
     console.log(tasks);
     if (tasks) {
-      res.status(200).json(tasks);
+      res.status(201).json(tasks);
     }
   } catch (error) {
     console.error(error);
